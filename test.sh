@@ -1,0 +1,1 @@
+pytest -v --cov=./zenmod --cov-report=term-missing
