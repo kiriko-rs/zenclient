@@ -13,7 +13,7 @@ def checkResponse(func):
         elif(r.status_code == 200):
             return r
         else:
-           raise UnexpectedResponseError('unexpected response.') 
+           raise UnexpectedResponseError(f'unexpected response: {r}') 
     return wrapper
 
 class ZenClient(object):
@@ -44,7 +44,16 @@ class ZenClient(object):
     def put_single_issue_estimate(self, workspace_id:str, issue_number:int, json:dict):
         url = f'{self.host}/p2/workspaces/{workspace_id}/repositories/{self.repo_id}/issues/{issue_number}/moves'
         return requests.post(url=url,headers=self.headers,data=json)
-
+    
+    @checkResponse
+    def convert_to_epic(self, repo_id:str, issue_number:int, json:dict=None):
+        url = f'{self.host}/p1/repositories/{repo_id}/issues/{issue_number}/convert_to_epic'
+        return requests.post(url=url, headers=self.headers,data=json)
+    
+    @checkResponse
+    def add_to_epic(self, repo_id:str, issue_number:int, json:dict):
+        url = f'{self.host}/p1/repositories/{repo_id}/epics/{issue_number}/update_issues'
+        return requests.post(url=url, headers=self.headers,data=json)
 class InvalidRequestError(Exception):
     pass
 class UnexpectedResponseError(Exception):
